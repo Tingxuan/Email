@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#coding=utf-8
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 from smtplib import *
@@ -73,7 +73,8 @@ class loginPage(object):
         firstSplit = self.username.split('@')[1]
         self.smtp = firstSplit.split('.')[0]
         print(self.smtp)
-        return 
+        return
+
 
 class sendMail(object):
     'my sendemail class'
