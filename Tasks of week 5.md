@@ -16,5 +16,3 @@ Test the code in the Smtp module, mark the blocks that can't work properly. Repo
 @ JiangJunYu 
 
 Optimize the UI of the app, choose the toolkits you use(wxPython Tkinter or Qt or use WebPage as UI, all up to you).
-
-hello
