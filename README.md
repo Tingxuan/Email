@@ -84,7 +84,7 @@ comment and docstr
 python教学 框架设计 任务布置 进度控制（PS；搞不完我就上。。）
 
 - Wangyuzhuo: ???
-- Zhangtingxuan: ???
+- Zhangtingxuan: main developer
 - Jiangjunyu: ???
 
 备选 ui设计 主力开发 代码测试
