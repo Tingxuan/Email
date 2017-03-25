@@ -1,6 +1,5 @@
-# Implement an email system with elementary functionality.
 
-实现一个基本的邮件系统
+# 实现一个基本的邮件系统
 
 ## Language: Pyhton 3
 
@@ -85,7 +84,7 @@ python教学 框架设计 任务布置 进度控制（PS；搞不完我就上。
 
 - Wangyuzhuo: ???
 - Zhangtingxuan: main developer
-- Jiangjunyu: ???
+- Jiangjunyu: Optimize the UI of the app by using Tkinter.
 
 备选 ui设计 主力开发 代码测试
 

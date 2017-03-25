@@ -1,12 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from smtplib import *
-from tkinter import *
-# import asyncio as asy
-import tkinter.messagebox as tkMessageBox
+'''
+The entry of the application
+'''
+import _smtp
 import string
+from tkinter import *
 
 
 class loginPage(object):
@@ -38,45 +38,24 @@ class loginPage(object):
         self.clearButton.grid(row=3, column=2)
 
     async def login(self):
-        self.username = self.userEntry.get().strip()
-        self.passwd = self.pwdEntry.get().strip()
-        if len(self.username) == 0 or len(self.passwd) == 0 or '@' not in self.username:
-            tkMessageBox.showwarning('警告', '用户名或者密码为空或邮件格式不正确')
+        username = self.userEntry.get().strip()
+        passwd = self.pwdEntry.get().strip()
 
+        if len(self.username) == 0 or len(self.passwd) == 0 or '@' not in self.username:
+            tkMessageBox.showwarning('Warning:', 'Invalid email format.')
             self.clear()
             self.userEntry.focus_set()
             return
 
-        await self.getSmtpHost()
-        await self.connect()
-        return True
-
-    def connect(self):
-        'this method will try to connet the SMTP server according the current user'
-        HOST = 'smtp.' + self.smtp + '.com'
-        try:
-            self.mySMTP = SMTP(HOST)
-            self.mySMTP.login(self.username, self.passwd)
-            return True
-        #except SMTPConnectError:
-        except Exception as e:
-            tkMessageBox.showerror('连接错误', '%s' % e)
-            return
-        self.mySendMail = sendMail(self.master, self.mySMTP, self.username)
+        self.proxy = _smtp.proxy(username, passwd)
+        self.mySendMail = mailBoxPage(self.master, self.mySMTP, self.username)
 
     def clear(self):
         self.userEntry.delete(0, END)
         self.pwdEntry.delete(0, END)
 
-    def getSmtpHost(self):
-        'this method try to obtian the SMTP HOST according the user account'
-        firstSplit = self.username.split('@')[1]
-        self.smtp = firstSplit.split('.')[0]
-        print(self.smtp)
-        return
 
-
-class sendMail(object):
+class mailBoxPage(object):
     'my sendemail class'
 
     def __init__(self, master, smtp='', sender=''):
@@ -111,17 +90,18 @@ class sendMail(object):
             self.sendPage, text='new mail', command=self.newMail)
         self.newButton.grid(row=4, column=1)
 
-    def getMailInfo(self):
-        self.sendToAdd = self.sendToEntry.get().strip()
-        self.subjectInfo = self.subjectEntry.get().strip()
-        self.sendTextInfo = self.sendText.get(1.0, END)
-
     def sendMail(self):
-        self.getMailInfo()
-        body = string.join(("From: %s" % self.sender, "To: %s" % self.sendToAdd,
-                            "Subject: %s" % self.subjectInfo, "", self.sendTextInfo), "\r\n")
+
+        def wraper(self):
+            sendToAdd = self.sendToEntry.get().strip()
+            subjectInfo = self.subjectEntry.get().strip()
+            sendTextInfo = self.sendText.get(1.0, END)
+            body = string.join(("From: %s" % self.sender, "To: %s" % sendToAdd,
+                                "Subject: %s" % subjectInfo, "", sendTextInfo), "\r\n")
+            return body
+
         try:
-            self.smtp.sendmail(self.sender, [self.sendToAdd], body)
+            self.proxy.sendmail(self.sender, [self.sendToAdd], self.warper())
         except Exception as e:
             tkMessageBox.showerr('发送失败', "%s" % e)
             return
@@ -131,7 +111,6 @@ class sendMail(object):
         self.sendToEntry.delete(0, END)
         self.subjectEntry.delete(0, END)
         self.sendText.delete(1.0, END)
-
 
 if __name__ == '__main__':
 
