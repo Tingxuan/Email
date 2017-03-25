@@ -5,31 +5,50 @@
 here is the doc
 '''
 
-from smtplib import *
+import smtplib
+import doctest
 
 
 class proxy(object):
+    default_port = {
+        "pop3": {False: 110, True: 995},
+        "imap4": {False: 143, True: 993},
+        "smtp": {False: 25, True: 465},
+    }
 
-    def __init__(username, password):
+    def __init__(username, password, ssl=True):
+
+        self.username = username
+        self.password = password
+        self.ssl = ssl
+        self.port = port
+        self.smtpServer = None
+        self.imapServer = None
 
     def connect(self):
-        # 'this method will try to connet the SMTP server according the current user'
-        # HOST = 'smtp.' + self.smtp + '.com'
-        # try:
-        #     self.mySMTP = SMTP(HOST)
-        #     self.mySMTP.login(self.username, self.passwd)
-        #     return True
-        # #except SMTPConnectError:
-        # except Exception as e:
-        #     tkMessageBox.showerror('连接错误', '%s' % e)
-        #     return
-        # self.mySendMail = sendMail(self.master, self.mySMTP, self.username)
+        ''' this method will try to connet the SMTP server according the current user
 
-    def getSmtpHost(username,):
-        #     'this method try to obtian the SMTP HOST according the user account'
-        #     firstSplit = self.username.split('@')[1]
-        #     self.smtp = firstSplit.split('.')[0]
-        # 'my sendemail class'
+        '''
+        def getHost(self):
+            '''this method try to obtian the SMTP HOST according the user account
+            :exapmle:
+            >>> getSmtpHost('neuromancer43@gmail.com')
+            '''
+            'gmail'
+            return self.username.split('@')[1].split('.')[0]
+
+        smtpHost = 'smtp.' + getHost() + '.com'
+        imapHost = 'imap.' + getHost() + '.com'
+
+        try:
+            self.smtpServer = smtplib.SMTP(smtpHost, proxy.default_port['smtp']['self.ssl'])
+            self.smtpServer.login(self.username, self.passwd)
+            return True
+
+        except Exception as e:
+            tkMessageBox.showerror('Connecting error!', '%s' % e)
+            return
+        self.mySendMail = sendMail(self.master, self.mySMTP, self.username)
 
     def sendMail(self):
         # self.getMailInfo()
@@ -41,3 +60,7 @@ class proxy(object):
         #     tkMessageBox.showerr('发送失败', "%s" % e)
         #     return
         # tkMessageBox.showinfo('提示', '邮件已发送成功！')
+        pass
+
+if __name__ == '__main__':
+    doctest.testmod(optionflags=1)

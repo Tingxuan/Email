@@ -42,14 +42,13 @@ class loginPage(object):
         passwd = self.pwdEntry.get().strip()
 
         if len(self.username) == 0 or len(self.passwd) == 0 or '@' not in self.username:
-            tkMessageBox.showwarning('警告', '用户名或者密码为空或邮件格式不正确')
+            tkMessageBox.showwarning('Warning:', 'Invalid email format.')
             self.clear()
             self.userEntry.focus_set()
             return
 
-        self.proxy=_smtp.proxy(username,passwd)
+        self.proxy = _smtp.proxy(username, passwd)
         self.mySendMail = mailBoxPage(self.master, self.mySMTP, self.username)
-
 
     def clear(self):
         self.userEntry.delete(0, END)
