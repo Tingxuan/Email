@@ -113,7 +113,6 @@ class proxy(object):
             smtpServer.login(self.username, self.password)
             server.sendmail(self.username, [receiverName, ], Message.as_string())
             server.quit()
-            
         except Exception as e:
             #print('Sending error!')
             #tkMessageBox.showerror('sendmail error!')
