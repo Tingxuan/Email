@@ -6,6 +6,7 @@ here is the doc
 '''
 
 import smtplib
+import _mailformer
 import doctest
 
 
@@ -16,20 +17,22 @@ class proxy(object):
         "smtp": {False: 25, True: 465},
     }
 
-    def __init__(username, password, ssl=True):
-
+    def __init__(self, username, password, ssl=False):
+        '''
+        Doctest successful~
+        '''
         self.username = username
         self.password = password
         self.ssl = ssl
-        self.port = port
         self.smtpServer = None
         self.imapServer = None
+        self.connect()
 
     def connect(self):
-        ''' this method will try to connet the SMTP server according the current user
-
         '''
-        def getHost(self):
+        this method will try to connet the SMTP server according the current user
+        '''
+        def getHost():
             '''this method try to obtian the SMTP HOST according the user account
             :exapmle:
             >>> getSmtpHost('neuromancer43@gmail.com')
@@ -40,27 +43,19 @@ class proxy(object):
         smtpHost = 'smtp.' + getHost() + '.com'
         imapHost = 'imap.' + getHost() + '.com'
 
-        try:
-            self.smtpServer = smtplib.SMTP(smtpHost, proxy.default_port['smtp']['self.ssl'])
-            self.smtpServer.login(self.username, self.passwd)
-            return True
+        if self.ssl:
+            self.smtpServer = smtplib.SMTP_SSL(smtpHost, proxy.default_port['smtp'][self.ssl])
+        else:
+            self.smtpServer = smtplib.SMTP(smtpHost, proxy.default_port['smtp'][self.ssl])
+            self.smtpServer.set_debuglevel(True)
+            self.smtpServer.ehlo()
+            self.smtpServer.starttls()
+        self.smtpServer.login(self.username, self.password)
+        return True
 
-        except Exception as e:
-            tkMessageBox.showerror('Connecting error!', '%s' % e)
-            return
-        self.mySendMail = sendMail(self.master, self.mySMTP, self.username)
+    def sendMail(self, warper):
 
-    def sendMail(self):
-        # self.getMailInfo()
-        # body = string.join(("From: %s" % self.sender, "To: %s" % self.sendToAdd,
-        #                     "Subject: %s" % self.subjectInfo, "", self.sendTextInfo), "\r\n")
-        # try:
-        #     self.smtp.sendmail(self.sender, [self.sendToAdd], body)
-        # except Exception as e:
-        #     tkMessageBox.showerr('发送失败', "%s" % e)
-        #     return
-        # tkMessageBox.showinfo('提示', '邮件已发送成功！')
-        pass
+        self.smtpServer.sendmail(self.username, [receiver, ], Message.as_string())
 
 if __name__ == '__main__':
     doctest.testmod(optionflags=1)
