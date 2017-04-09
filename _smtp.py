@@ -54,8 +54,8 @@ class proxy(object):
         return True
 
     def sendMail(self, warper):
-
-        self.smtpServer.sendmail(self.username, [receiver, ], Message.as_string())
+        pass
+        # self.smtpServer.sendmail(self.username, [receiver, ], Message.as_string())
 
 if __name__ == '__main__':
     doctest.testmod(optionflags=1)
