@@ -56,9 +56,9 @@ class proxy(object):
         self.smtpServer.login(self.username, self.password)
         return True
 
-    def sendMail(self, warper):
-        msg = _mailformer.mailFormer(warper)
-        self.smtpServer.sendmail(self.username, [warper["To"]], msg.as_string())
+    def sendMail(self, wraper):
+        msg = _mailformer.mailFormer(wraper)
+        self.smtpServer.sendmail(self.username, [wraper["To"]], msg.as_string())
 
 if __name__ == '__main__':
     doctest.testmod(optionflags=1)
