@@ -11,6 +11,9 @@ import doctest
 
 
 class proxy(object):
+    '''
+    a proxy that connect to a server and send email to service providor
+    '''
     default_port = {
         "pop3": {False: 110, True: 995},
         "imap4": {False: 143, True: 993},
@@ -54,8 +57,8 @@ class proxy(object):
         return True
 
     def sendMail(self, warper):
-        pass
-        # self.smtpServer.sendmail(self.username, [receiver, ], Message.as_string())
+        msg = _mailformer.mailFormer(warper)
+        self.smtpServer.sendmail(self.username, [warper["To"]], msg.as_string())
 
 if __name__ == '__main__':
     doctest.testmod(optionflags=1)
