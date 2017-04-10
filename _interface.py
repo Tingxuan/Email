@@ -129,7 +129,7 @@ class mailBoxPage(object):
         self.sendToEntry.delete(0, END)
         self.subjectEntry.delete(0, END)
         self.sendText.delete(1.0, END)
-        return 
+        return
 
     #def logout(self):
 
