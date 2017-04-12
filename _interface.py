@@ -4,6 +4,7 @@
 '''
 The entry of the application
 '''
+import doctest
 import _smtp
 import string
 from tkinter import *
@@ -53,9 +54,11 @@ class loginPage(object):
             self.mySendMail = mailBoxPage(self.master, proxy, username)
 
         except smtplib.SMTPConnectError:
-            tkMessageBox.showerror('Connection Error', "Can't connect to server!")
+            tkMessageBox.showerror(
+                'Connection Error', "Can't connect to server!")
         except smtplib.SMTPAuthenticationError as auth:
-            tkMessageBox.showerror('Authentication error!', 'Invalid username or password!')
+            tkMessageBox.showerror(
+                'Authentication error!', 'Invalid username or password!')
         except smtplib.SMTPHeloError as helo:
             tkMessageBox.showerror('Hello error!', helo)
         except smtplib.SMTPException as e:
@@ -67,7 +70,12 @@ class loginPage(object):
 
 
 class mailBoxPage(object):
-    'my sendemail class'
+    '''
+    app = Tk()
+    app.title("Test")
+    host = _smtp.proxy('m13618311520@163.com', 'jkl7888927')
+    boxPage = mailBoxPage(app, host, host.username)
+    '''
 
     def __init__(self, master, server, sender=''):
         self.proxy = server
@@ -94,7 +102,7 @@ class mailBoxPage(object):
         self.sendText.grid(row=3, column=0, columnspan=2)
 
         self.sendButton = Button(
-            self.sendPage, text='send', command=self.proxy.sendMail)
+            self.sendPage, text='send', command=self.sendMail)
         self.sendButton.grid(row=4, column=0)
 
         self.newButton = Button(
@@ -103,7 +111,7 @@ class mailBoxPage(object):
 
     def sendMail(self):
 
-        def wraper(self):
+        def wraper():
             sendToAdd = self.sendToEntry.get().strip()
             subjectInfo = self.subjectEntry.get().strip()
             sendTextInfo = self.sendText.get(1.0, END)
@@ -111,8 +119,10 @@ class mailBoxPage(object):
                     "Subject": subjectInfo, "Text": sendTextInfo}
             return body
 
+        tkMessageBox.showinfo('Test', wraper())
+
         try:
-            self.proxy.sendmail(self.warper())
+            self.proxy.sendMail(wraper())
 
         except smtplib.SMTPSenderRefused as e:
             tkMessageBox.showerror('Invalid sender!', e)
@@ -123,17 +133,18 @@ class mailBoxPage(object):
         except Exception as e:
             tkMessageBox.showerror('Failed!', e)
             return
-        tkMessageBox.showinfo('Success!')
+        tkMessageBox.showinfo('Success!', 'Mail has been sent!')
 
     def newMail(self):
         self.sendToEntry.delete(0, END)
         self.subjectEntry.delete(0, END)
         self.sendText.delete(1.0, END)
-        return 
+        return
 
     #def logout(self):
 
 if __name__ == '__main__':
+    # doctest.testmod(optionflags=1)
     root = Tk()
     root.title('Simple Email')
 
