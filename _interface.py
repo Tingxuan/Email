@@ -7,6 +7,8 @@ The entry of the application
 import _smtp
 import string
 from tkinter import *
+import tkinter.messagebox as tkMessageBox
+import smtplib
 
 
 class loginPage(object):
@@ -37,18 +39,27 @@ class loginPage(object):
             master, text='Clear', borderwidth=2, command=self.clear)
         self.clearButton.grid(row=3, column=2)
 
-    async def login(self):
+    def login(self):
         username = self.userEntry.get().strip()
         passwd = self.pwdEntry.get().strip()
 
-        if len(self.username) == 0 or len(self.passwd) == 0 or '@' not in self.username:
+        if len(username) == 0 or len(passwd) == 0 or '@' not in username:
             tkMessageBox.showwarning('Warning:', 'Invalid email format.')
             self.clear()
             self.userEntry.focus_set()
             return
+        try:
+            proxy = _smtp.proxy(username, passwd)
+            self.mySendMail = mailBoxPage(self.master, proxy, username)
 
-        self.proxy = _smtp.proxy(username, passwd)
-        self.mySendMail = mailBoxPage(self.master, self.mySMTP, self.username)
+        except smtplib.SMTPConnectError:
+            tkMessageBox.showerror('Connection Error', "Can't connect to server!")
+        except smtplib.SMTPAuthenticationError as auth:
+            tkMessageBox.showerror('Authentication error!', 'Invalid username or password!')
+        except smtplib.SMTPHeloError as helo:
+            tkMessageBox.showerror('Hello error!', helo)
+        except smtplib.SMTPException as e:
+            tkMessageBox.showerror('Connection error!', e)
 
     def clear(self):
         self.userEntry.delete(0, END)
@@ -58,8 +69,8 @@ class loginPage(object):
 class mailBoxPage(object):
     'my sendemail class'
 
-    def __init__(self, master, smtp='', sender=''):
-        self.smtp = smtp
+    def __init__(self, master, server, sender=''):
+        self.proxy = server
         self.sender = sender
 
         self.sendPage = Toplevel(master)
@@ -83,7 +94,7 @@ class mailBoxPage(object):
         self.sendText.grid(row=3, column=0, columnspan=2)
 
         self.sendButton = Button(
-            self.sendPage, text='send', command=self.sendMail)
+            self.sendPage, text='send', command=self.proxy.sendMail)
         self.sendButton.grid(row=4, column=0)
 
         self.newButton = Button(
@@ -96,26 +107,35 @@ class mailBoxPage(object):
             sendToAdd = self.sendToEntry.get().strip()
             subjectInfo = self.subjectEntry.get().strip()
             sendTextInfo = self.sendText.get(1.0, END)
-            body = string.join(("From: %s" % self.sender, "To: %s" % sendToAdd,
-                                "Subject: %s" % subjectInfo, "", sendTextInfo), "\r\n")
+            body = {"From": self.sender, "To": sendToAdd,
+                    "Subject": subjectInfo, "Text": sendTextInfo}
             return body
 
         try:
-            self.proxy.sendmail(self.sender, [self.sendToAdd], self.warper())
-        except Exception as e:
-            tkMessageBox.showerr('发送失败', "%s" % e)
+            self.proxy.sendmail(self.warper())
+
+        except smtplib.SMTPSenderRefused as e:
+            tkMessageBox.showerror('Invalid sender!', e)
             return
-        tkMessageBox.showinfo('提示', '邮件已发送成功！')
+        except smtplib.SMTPRecipientsRefused as e:
+            tkMessageBox.showerror('Invalid Recipients!', e)
+            return
+        except Exception as e:
+            tkMessageBox.showerror('Failed!', e)
+            return
+        tkMessageBox.showinfo('Success!')
 
     def newMail(self):
         self.sendToEntry.delete(0, END)
         self.subjectEntry.delete(0, END)
         self.sendText.delete(1.0, END)
+        return 
+
+    #def logout(self):
 
 if __name__ == '__main__':
-
     root = Tk()
-    root.title('简易发送邮件程序')
+    root.title('Simple Email')
 
     myLogin = loginPage(root)
 

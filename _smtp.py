@@ -6,6 +6,7 @@ here is the doc
 '''
 
 import smtplib
+import _mailformer
 import doctest
 from email.mime.text import MIMEText
 from email.utils import formataddr
@@ -20,22 +21,38 @@ class proxy(object):
         "smtp": {False: 25, True: 465},
     }
 
+<<<<<<< HEAD
     def __init__(self, username, password, ssl=True):
 
         self.username = username
         self.password = password
         self.ssl = ssl
         #self.port = port
+=======
+    def __init__(self, username, password, ssl=False):
+        '''
+        Doctest successful~
+        '''
+        self.username = username
+        self.password = password
+        self.ssl = ssl
+>>>>>>> 77135b3dd7b37566ce51f0a90522d9c54187f6a1
         self.smtpServer = None
         self.imapServer = None
+        self.connect()
 
     def connect(self):
-        ''' this method will try to connet the SMTP server according the current user
-
         '''
+<<<<<<< HEAD
 
         def getHost(self):
             '''this method will try to obtian the SMTP HOST according the user account
+=======
+        this method will try to connet the SMTP server according the current user
+        '''
+        def getHost():
+            '''this method try to obtian the SMTP HOST according the user account
+>>>>>>> 77135b3dd7b37566ce51f0a90522d9c54187f6a1
             :exapmle:
             >>> getSmtpHost('neuromancer43@gmail.com')
             'gmail'
@@ -43,6 +60,7 @@ class proxy(object):
 
             return self.username.split('@')[1].split('.')[0]
 
+<<<<<<< HEAD
         smtpHost = 'smtp.' + getHost(self) + '.com'
         imapHost = 'imap.' + getHost(self) + '.com'
         try:
@@ -149,3 +167,21 @@ Mail_demo.sendMail()
 
 # if __name__ == '__main__':
 # doctest.testmod(optionflags=1)
+=======
+        if self.ssl:
+            self.smtpServer = smtplib.SMTP_SSL(smtpHost, proxy.default_port['smtp'][self.ssl])
+        else:
+            self.smtpServer = smtplib.SMTP(smtpHost, proxy.default_port['smtp'][self.ssl])
+            self.smtpServer.set_debuglevel(True)
+            self.smtpServer.ehlo()
+            self.smtpServer.starttls()
+        self.smtpServer.login(self.username, self.password)
+        return True
+
+    def sendMail(self, warper):
+        pass
+        # self.smtpServer.sendmail(self.username, [receiver, ], Message.as_string())
+
+if __name__ == '__main__':
+    doctest.testmod(optionflags=1)
+>>>>>>> 77135b3dd7b37566ce51f0a90522d9c54187f6a1
