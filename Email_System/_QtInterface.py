@@ -6,7 +6,7 @@ import smtplib
 import sys
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QLineEdit, QTextEdit,
                              QPushButton, QApplication, QDesktopWidget,
-                             qApp, QVBoxLayout, QGridLayout, QMessageBox)
+                             qApp, QVBoxlayout, QGridlayout, QMessageBox)
 
 from PyQt5.QtGui import QFont, QIcon
 
@@ -40,11 +40,11 @@ class loginPage(QWidget):
         grid.addWidget(password, 2, 0)
         grid.addWidget(self.pwdEntry, 2, 1)
 
-        LayOut = QVBoxLayout()
-        LayOut.addLayout(grid)
-        LayOut.addWidget(login)
+        layout = QVBoxLayout()
+        layout.addLayout(grid)
+        layout.addWidget(login)
 
-        self.setLayout(LayOut)
+        self.setLayout(layout)
         self.setGeometry(400, 400, 400, 300)
         self.setWindowTitle('Login')
         self.setWindowIcon(QIcon('icon.png'))
@@ -116,9 +116,20 @@ class mailBoxPage(QWidget):
         grid.addWidget(text, 3, 0)
         grid.addWidget(self.textEdit, 3, 1, 5, 1)
 
-        self.setLayout(grid)
+        send = QPushButton("Send")
+        send.clicked.connect(self.sendMail())
 
-        self.setGeometry(300, 300, 350, 300)
+        clear = QPushButton("New Mail")
+        clear.clicked.connect(self.newMail())
+
+        layout = QVBoxLayout()
+        layout.addLayout(grid)
+        layout.addWidget(send)
+        layout.addWidget(clear)
+
+        self.setLayout(layout)
+
+        self.setGeometry(600, 600, 700, 600)
         self.setWindowTitle('MailBox')
         self.show()
 
@@ -167,6 +178,7 @@ class main(QMainWindow):
 
 
 if __name__ == '__main__':
+
     def pyqt_set_trace():
         '''Set a tracepoint in the Python debugger that works with Qt'''
         from PyQt5.QtCore import pyqtRemoveInputHook
