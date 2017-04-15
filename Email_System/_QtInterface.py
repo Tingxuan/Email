@@ -1,14 +1,12 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import _smtp
 import smtplib
 import sys
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QLineEdit, QTextEdit,
                              QPushButton, QApplication, QDesktopWidget,
-                             qApp, QVBoxlayout, QGridlayout, QMessageBox)
+                             qApp, QVBoxLayout, QGridLayout, QMessageBox)
 
 from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt
 
 
 class loginPage(QWidget):
@@ -28,6 +26,9 @@ class loginPage(QWidget):
         self.pwdEntry.setEchoMode(QLineEdit.Password)
 
         login = QPushButton("Login", self)
+        login.setStyleSheet("color:white;"
+                            "background-color:#4b8ef9;"
+                            "font: bold")
         login.clicked.connect(self.login)
 
         # clear = QPushButton("Clear", self)
@@ -40,12 +41,12 @@ class loginPage(QWidget):
         grid.addWidget(password, 2, 0)
         grid.addWidget(self.pwdEntry, 2, 1)
 
-        layout = QVBoxLayout()
-        layout.addLayout(grid)
-        layout.addWidget(login)
+        LayOut = QVBoxLayout()
+        LayOut.addLayout(grid)
+        LayOut.addWidget(login)
 
-        self.setLayout(layout)
-        self.setGeometry(400, 400, 400, 300)
+        self.setLayout(LayOut)
+        self.setGeometry(400, 400, 400, 200)
         self.setWindowTitle('Login')
         self.setWindowIcon(QIcon('icon.png'))
 
@@ -78,7 +79,7 @@ class loginPage(QWidget):
 
         except smtplib.SMTPConnectError:
             QMessageBox.warning(
-                'Connection Error', "Can't connect to server!")
+                'ConnYection Error', "Can't connect to server!")
         except smtplib.SMTPAuthenticationError as auth:
             QMessageBox.warning(
                 'Authentication error!', 'Invalid username or password!')
@@ -96,42 +97,75 @@ class mailBoxPage(QWidget):
         self.proxy = proxy
         self.sender = sender
 
-        title = QLabel('Subject')
-        author = QLabel('Sender')
-        text = QLabel('Content')
-
-        self.titleEdit = QLineEdit()
-        self.authorEdit = QLineEdit()
+        self.authorEdit = QLineEdit("To: ")
+        self.titleEdit = QLineEdit("Subject: ")
         self.textEdit = QTextEdit()
+        self.sendButton = QPushButton("Send")
 
-        grid = QGridLayout()
-        grid.setSpacing(10)
+        self.authorEdit.setStyleSheet(
+            "color: grey;"
+            "border-width:0;"
+            "margin-top: 5;"
+            "margin-bottom: 4;"
+            "padding-top:4;"
+            "margin-left:15;margin-right:15")
 
-        grid.addWidget(title, 1, 0)
-        grid.addWidget(self.titleEdit, 1, 1)
+        self.titleEdit.setStyleSheet(
+            "color: grey;"
+            "border-width:0;"
+            "margin-top: 10;"
+            "margin-bottom: 5;"
+            "padding-top: 5;"
+            "margin-left:15;"
+            "margin-right:15;")
 
-        grid.addWidget(author, 2, 0)
-        grid.addWidget(self.authorEdit, 2, 1)
+        self.textEdit.setStyleSheet(
+            "color: black;"
+            "border-width: 0;"
+            "margin-bottom: 15;"
+            "margin-left:15;"
+            "margin-right:15")
 
-        grid.addWidget(text, 3, 0)
-        grid.addWidget(self.textEdit, 3, 1, 5, 1)
+        self.sendButton.setStyleSheet(
+            "color: white;"
+            "background-color: #4b8ef9;"
+            "border-radius: 5px;"
+            "border-color:#4b8ef9;"
+            "margin-left:5;"
+            "margin-right:660;"
+            "margin-bottom:5;"
+            "font: bold"
+        )
 
-        send = QPushButton("Send")
-        send.clicked.connect(self.sendMail())
+        bodyLayout = QVBoxLayout()
+        bodyLayout.addSpacing(0)
+        bodyLayout.setContentsMargins(0, 10, 0, 0)
+        bodyLayout.addWidget(self.authorEdit)
+        bodyLayout.addWidget(self.titleEdit)
+        bodyLayout.addWidget(self.textEdit)
+        bodyLayout.addWidget(self.sendButton)
 
-        clear = QPushButton("New Mail")
-        clear.clicked.connect(self.newMail())
-
-        layout = QVBoxLayout()
-        layout.addLayout(grid)
-        layout.addWidget(send)
-        layout.addWidget(clear)
-
-        self.setLayout(layout)
-
-        self.setGeometry(600, 600, 700, 600)
+        self.setStyleSheet("background-color:#f5f5f5;"
+                           "border-style: solid;"
+                           "border-width: 2px;"
+                           "border-color:  #c1c5c8;")
+        self.setLayout(bodyLayout)
+        self.setGeometry(300, 300, 750, 620)
         self.setWindowTitle('MailBox')
         self.show()
+
+    def paintEvent(self, e):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawLines(qp)
+        qp.end()
+
+    def drawLines(self, qp):
+        pen = QPen(Qt.lightGray, 1, Qt.SolidLine)
+        qp.setPen(pen)
+        qp.drawLine(0, 50, 750, 50)
+        qp.drawLine(0, 90, 750, 90)
+        qp.drawLine(0, 590, 750, 590)
 
     def sendMail(self):
 
@@ -178,7 +212,6 @@ class main(QMainWindow):
 
 
 if __name__ == '__main__':
-
     def pyqt_set_trace():
         '''Set a tracepoint in the Python debugger that works with Qt'''
         from PyQt5.QtCore import pyqtRemoveInputHook
@@ -189,8 +222,9 @@ if __name__ == '__main__':
         debugger = pdb.Pdb()
         debugger.reset()
         # custom next to get outside of function scope
-        debugger.do_next(None) # run the next command
-        users_frame = sys._getframe().f_back # frame where the user invoked `pyqt_set_trace()`
+        debugger.do_next(None)  # run the next command
+        # frame where the user invoked `pyqt_set_trace()`
+        users_frame = sys._getframe().f_back
         debugger.interaction(users_frame, None)
 
     app = QApplication(sys.argv)
