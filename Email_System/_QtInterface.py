@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QLineEdit, QTextEdit,
                              QPushButton, QApplication, QDesktopWidget,
                              qApp, QVBoxLayout, QGridLayout, QMessageBox)
 
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont, QIcon, QPainter
 from PyQt5.QtCore import Qt
 
 
