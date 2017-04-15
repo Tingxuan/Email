@@ -9,6 +9,9 @@ import _smtp
 import string
 from tkinter import *
 import tkinter.messagebox as tkMessageBox
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from email.mime.text import MIMEText
 import smtplib
 
 
@@ -108,17 +111,27 @@ class mailBoxPage(object):
         self.newButton = Button(
             self.sendPage, text='new mail', command=self.newMail)
         self.newButton.grid(row=4, column=1)
-
+        '''
+        self.addImageButton = Button(
+            self.sendPage, text='add Image', command=self.addImage)
+        self.addImageButton.grid(row=4, column=2)
+        '''
     def sendMail(self):
-
         def wraper():
             sendToAdd = self.sendToEntry.get().strip()
             subjectInfo = self.subjectEntry.get().strip()
             sendTextInfo = self.sendText.get(1.0, END)
-            body = {"From": self.sender, "To": sendToAdd,
-                    "Subject": subjectInfo, "Text": sendTextInfo}
+            body = MIMEMultipart()  
+            body["From"] = self.sender
+            body["To"] = sendToAdd
+            body["Subject"] = subjectInfo
+            body["Text"] = sendTextInfo
+            part = MIMEText("hello")
+            body.attach(part)
+            part = MIMEApplication(open("D:\\1.jpg",'rb').read())
+            part.add_header('Content-Disposition','attachment',filename = "ss")
+            body.attach(part)
             return body
-
         tkMessageBox.showinfo('Test', wraper())
 
         try:
@@ -141,14 +154,29 @@ class mailBoxPage(object):
         self.sendText.delete(1.0, END)
         return
 
-    #def logout(self):
 
+'''    def addImage(self):
+            sendToAdd = self.sendToEntry.get().strip()
+            subjectInfo = self.subjectEntry.get().strip()
+            sendTextInfo = self.sendText.get(1.0, END)
+            part = MIMEText()
+            body["From"] = self.sender
+            body["To"] = sendToAdd
+            body["Subject"] = subjectInfo
+            body["Text"] = sendTextInfo
+            #body = {"From": self.sender, "To": sendToAdd,
+                    #"Subject": subjectInfo, "Text": sendTextInfo}
+            part = MIMEImage(open('icon.png').read())
+            part.add_header('Content-Disposition','attachment',filename = "icon.png")
+            body.attach(part)
+            return body
+'''
 if __name__ == '__main__':
     # doctest.testmod(optionflags=1)
     root = Tk()
     root.title('Simple Email')
 
     myLogin = loginPage(root)
-
+  
     #root.wait_window(myLogin.mySendMail.sendPage)
     mainloop()
